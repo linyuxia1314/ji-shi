@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#24735b">
+  <title>轻记 · 本地记事本</title>
+  <link rel="icon" href="__ICON__">
+  <style>/*__CSS__*/</style>
+</head>
+<body>
+  <div id="app" class="app" hidden>
+    <div id="drawerShade" class="drawer-shade" hidden></div>
+    <aside class="sidebar" id="sidebar" aria-label="分类导航">
+      <div class="brand"><img src="__ICON__" alt="" width="38" height="38"><span>轻记</span><button class="icon-button drawer-close" data-action="close-sidebar" aria-label="关闭分类"><i data-lucide="x"></i></button></div>
+      <button class="new-note primary" data-action="new-note"><i data-lucide="plus"></i>新建表格</button>
+      <nav id="mainNav" class="main-nav" aria-label="笔记视图"></nav>
+      <div class="section-heading"><span>我的分类</span><div class="category-heading-actions"><button id="categoryOrderToggle" class="icon-button small" data-action="toggle-category-order" aria-label="调整分类位置" title="调整分类位置" aria-pressed="false" hidden><i data-lucide="arrow-down-up"></i></button><button class="icon-button small" data-action="new-category" aria-label="新建分类" title="新建分类"><i data-lucide="plus"></i></button></div></div>
+      <nav id="categoryTree" class="category-tree" aria-label="我的分类"></nav>
+      <div class="section-heading tag-heading"><span>标签</span><span id="tagTotal" class="muted"></span></div>
+      <nav id="tagNav" class="tag-nav" aria-label="标签"></nav>
+      <div class="sidebar-bottom"><button id="trashNav" class="nav-row" data-view="trash"><i data-lucide="trash-2"></i><span>回收站</span><span class="count"></span></button><div class="bottom-tools"><button class="sidebar-command" data-action="settings" aria-label="设置与备份" title="设置与备份"><i data-lucide="settings-2"></i><span>设置</span></button><button class="sidebar-command" data-action="lock" aria-label="锁定笔记" title="锁定笔记"><i data-lucide="lock-keyhole"></i><span>锁定</span></button></div></div>
+    </aside>
+    <section class="notes-panel" aria-label="笔记列表">
+      <header class="list-heading"><div><button class="icon-button mobile-menu" data-action="open-sidebar" aria-label="打开分类"><i data-lucide="panel-left"></i></button><h1 id="viewTitle">全部表格</h1><span id="viewCount" class="heading-count"></span></div><div class="list-actions"><button id="reorderToggle" class="icon-button" data-action="toggle-reorder" aria-label="调整文件位置" title="调整文件位置" aria-pressed="false" hidden><i data-lucide="arrow-down-up"></i></button><button class="icon-button" data-action="new-note" aria-label="新建表格" title="新建表格"><i data-lucide="plus"></i></button></div></header>
+      <div class="search-wrap"><i data-lucide="search"></i><input id="search" type="search" aria-label="搜索记录" placeholder="搜索项目、记录、金额" autocomplete="off"></div>
+      <div class="list-subhead table-filters" role="tablist" aria-label="表格类型"><span id="listLabel" class="sr-only">所有记录</span><button role="tab" data-table-view="numbered" aria-selected="false"><i data-lucide="list-ordered"></i>序号表</button><button role="tab" data-table-view="timed" aria-selected="false"><i data-lucide="clock-3"></i>时间表</button></div>
+      <div id="noteList" class="note-list"></div>
+      <footer class="list-footer"><span id="listFooter"></span><button id="emptyTrash" class="text-button danger" data-action="empty-trash" hidden>清空</button></footer>
+    </section>
+    <main class="editor-panel" id="editorPanel" aria-label="笔记编辑区">
+      <header class="editor-topbar"><div class="editor-trail"><button class="icon-button mobile-back" data-action="back-list" aria-label="返回笔记列表"><i data-lucide="arrow-left"></i></button><i data-lucide="notebook-pen"></i><span id="editorTrail">笔记</span></div><div class="editor-actions" id="editorActions"><span id="saveStatus" class="save-status" role="status"></span><button id="editorToolsToggle" class="icon-button tools-toggle" data-action="toggle-editor-tools" title="展开编辑工具" aria-label="展开编辑工具" aria-expanded="false" aria-controls="editorTools"><i data-lucide="chevron-down"></i></button><div class="menu-anchor"><button class="icon-button" data-action="note-menu" title="更多操作" aria-label="更多操作" aria-expanded="false"><i data-lucide="ellipsis"></i></button><div class="popup-menu" id="noteMenu" hidden><button id="pinButton" data-action="pin" title="置顶笔记" aria-label="置顶笔记"><i data-lucide="pin"></i><span id="pinLabel">置顶笔记</span></button><button data-action="export-note"><i data-lucide="download"></i>导出文本</button><button data-action="duplicate"><i data-lucide="copy"></i>复制笔记</button><button data-action="delete-note" class="danger"><i data-lucide="trash-2"></i>移到回收站</button></div></div></div></header>
+      <div id="editorEmpty" class="editor-empty" hidden><div class="empty-art"><img src="__ICON__" width="70" height="70" alt=""></div><button class="text-button" data-action="new-note"><i data-lucide="plus"></i>新建表格</button></div>
+      <div id="editorContent" class="editor-content">
+        <div id="trashBanner" class="trash-banner" hidden><span><i data-lucide="trash-2"></i>此笔记在回收站中</span><button class="text-button" data-action="restore">恢复笔记</button><button class="text-button danger" data-action="permanent-delete">永久删除</button></div>
+        <input id="noteTitle" class="note-title" aria-label="表格标题" placeholder="未命名表格" maxlength="200" autocomplete="off">
+        <div id="editorTools" class="editor-tools" role="region" aria-label="编辑工具" hidden>
+        <div class="note-meta"><span class="category-badge"><i data-lucide="folder"></i><select id="noteCategory" aria-label="表格分类"></select></span><button id="tableCalculator" class="icon-button" title="金额计算" aria-label="金额计算"><i data-lucide="calculator"></i></button><button class="icon-button" data-action="editor-settings" title="显示设置" aria-label="显示设置"><i data-lucide="settings-2"></i></button><span id="noteDate" hidden></span></div>
+        <div class="note-tags"><i data-lucide="tags"></i><div id="editorTags" class="editor-tags"></div><input id="tagInput" aria-label="添加标签" placeholder="添加标签" maxlength="30" autocomplete="off" list="tagSuggestions"><datalist id="tagSuggestions"></datalist></div>
+        <div class="writing-toolbar" id="writingToolbar" role="toolbar" aria-label="文字格式" hidden>
+          <div class="format-row">
+            <button class="icon-button format-button" data-action="bold" title="加粗" aria-label="加粗" aria-pressed="false"><i data-lucide="bold"></i></button>
+            <button class="icon-button format-button" data-action="italic" title="斜体" aria-label="斜体" aria-pressed="false"><i data-lucide="italic"></i></button>
+            <button class="icon-button format-button" data-action="underline" title="下划线" aria-label="下划线" aria-pressed="false"><i data-lucide="underline"></i></button>
+            <span class="tool-divider"></span>
+            <select id="fontSize" class="font-size-select" aria-label="字号" title="字号"><option value="12">12</option><option value="14">14</option><option value="16">16</option><option value="18">18</option><option value="20">20</option><option value="24">24</option><option value="28">28</option><option value="32">32</option></select>
+            <div class="color-anchor"><button class="icon-button color-button" id="textColorButton" data-action="text-color" title="文字颜色" aria-label="文字颜色" aria-expanded="false"><i data-lucide="type"></i><span id="textColorIndicator" class="color-indicator"></span></button><div id="textColorMenu" class="text-color-menu" hidden></div></div>
+            <button class="icon-button format-button" data-action="highlight" title="高亮" aria-label="高亮" aria-pressed="false"><i data-lucide="highlighter"></i></button>
+            <button class="icon-button" data-action="clear-format" title="清除格式" aria-label="清除格式"><i data-lucide="remove-formatting"></i></button>
+          </div>
+          <div class="insert-row"><div><button class="icon-button" data-action="insert-list" title="插入列表" aria-label="插入列表"><i data-lucide="list"></i></button><button class="icon-button" data-action="insert-task" title="插入待办" aria-label="插入待办"><i data-lucide="list-checks"></i></button><button class="icon-button" data-action="insert-date" title="插入日期" aria-label="插入日期"><i data-lucide="calendar-plus"></i></button><span class="tool-divider"></span><button class="icon-button" data-action="undo" title="撤销" aria-label="撤销"><i data-lucide="undo-2"></i></button><button class="icon-button" data-action="redo" title="重做" aria-label="重做"><i data-lucide="redo-2"></i></button></div><span id="createdDate" class="created-date"></span><button class="icon-button" data-action="editor-settings" title="编辑设置" aria-label="编辑设置"><i data-lucide="settings-2"></i></button></div>
+        </div>
+        </div>
+        <div id="tableWorkspace" class="table-workspace">
+          <div class="table-heading"><span><span id="tableKindIcon"></span><span id="tableKindLabel"></span></span><span id="tableRowCount"></span></div>
+          <div id="tableScroll" class="table-scroll"><table id="recordTable" class="record-table" aria-label="记事表格"></table><div id="tableEmpty" class="table-empty" hidden>暂无记录</div><details id="legacyNote" class="legacy-note" hidden><summary>原笔记</summary><div id="noteBody" class="note-body" contenteditable="false" role="textbox" aria-multiline="true" aria-readonly="true" aria-label="原笔记内容" spellcheck="false"></div></details></div>
+          <div class="table-summary"><button id="addTableRow" class="primary"><i data-lucide="plus"></i>添加一行</button><div><span id="tablePending" class="table-pending" role="status"></span><span class="total-label">合计</span><strong id="tableTotal">0.00</strong><span class="total-unit">元</span></div></div>
+        </div>
+      </div>
+      <footer class="editor-footer"><span id="editorUpdated"></span><div><span id="charCount"></span><span id="lockState"></span></div></footer>
+    </main>
+  </div>
+  <section id="lockScreen" class="lock-screen" hidden aria-label="笔记密码锁"><div class="lock-brand"><img src="__ICON__" width="42" height="42" alt=""><span>轻记</span></div><form id="unlockForm" class="unlock-form"><div class="lock-emblem"><i data-lucide="lock-keyhole"></i></div><h1>你的笔记，妥善收好</h1><p>输入密码，继续记录。</p><label for="unlockPassword">笔记密码</label><div class="password-field"><input id="unlockPassword" type="password" autocomplete="current-password" required><button type="button" class="icon-button" data-action="show-password" aria-label="显示密码" title="显示密码"><i data-lucide="eye"></i></button></div><p id="unlockError" class="form-error" role="alert"></p><button id="unlockButton" class="primary" type="submit"><i data-lucide="unlock-keyhole"></i>解锁笔记</button><button type="button" class="text-button forgot-password" data-action="forgot-password"><i data-lucide="key-round"></i>忘记密码</button><span class="lock-footnote"><i data-lucide="shield-check"></i>本地加密保存</span></form><div class="lock-bottom">一方安静的记录空间</div></section>
+  <dialog id="modal" class="modal"><div id="modalContent"></div></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <input type="file" id="importFile" accept=".json,application/json" hidden>
+  <script>/*__LUCIDE__*/</script>
+  <script>/*__MATH__*/</script>
+  <script>/*__TABLES__*/</script>
+  <script>/*__VAULT__*/</script>
+  <script>/*__JS__*/</script>
+</body>
+</html>

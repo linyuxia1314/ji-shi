@@ -1,0 +1,28 @@
+# Local signing credentials and toolchains
+/work/android-signing/
+/work/android-sdk/
+node_modules/
+.env
+.env.*
+*.p12
+*.jks
+*.keystore
+*.pass
+
+# Generated builds; keep third-party license files in assets
+/outputs/
+/work/android/build/
+/work/android/assets/index.html
+*.apk
+*.aab
+
+# Local note backups, recovery codes, and preview captures
+/work/*backup*.json
+/work/notes-v*.json
+/work/*recovery*.txt
+/work/*.png
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+*.log
